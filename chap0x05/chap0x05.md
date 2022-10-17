@@ -5,7 +5,7 @@
 - Scapy 2.4.5
 - Python 3.10
 - 网络拓扑（因为只是为了扫描端口，就化繁为简了）：
-  - scanner(172.16.111.134) <--------> server(172.16.111.1)
+  - scanner(172.16.111.134) <----switch----> server(172.16.111.1)
 
 ## 2. 目录结构
 ``` 
@@ -167,6 +167,21 @@ resp = sr1(p, timeout=2, verbose=0)
 ![](img/udpscan_open_result.png)
 
 可以看到程序已经可以准确识别端口状态了
+
+#### 3.4.3 SYN Scan 分析
+使用 Wireshark 的 `Flow Graph` 功能分析 `OPEN` 状态下使用 SYN scnner 抓取的包：
+
+![](img/flow_grams.png)
+
+对比 Nmap 官网上给出的示意图：
+
+![](https://nmap.org/book/images/ereet/Ereet_Packet_Trace_Syn_Open.png)
+
+在 scanner 收到 SYN/ACK 后，直接进行 RST 的发送，达到了隐蔽扫描的特点，因此这种扫描方式也作为 Nmap 的缺省扫描方式：
+
+>SYN scan has long been called the stealth scan because it is subtler than TCP connect scan (discussed next), which was the most common scan type before Nmap was released. Despite that moniker, don't count on a default SYN scan slipping undetected through sensitive networks. Widely deployed intrusion detection systems and even personal firewalls are quite capable of detecting default SYN scans. More effective techniques for stealthy scanning are demonstrated in Chapter 10, Detecting and Subverting Firewalls and Intrusion Detection Systems.
+
+
 
 ## 4 实验问题
 
