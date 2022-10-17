@@ -47,14 +47,12 @@ if __name__ == '__main__':
         ip = args.destination
 
     try:
-        feature.is_up(ip)
-    except:
-        print("Host is down")
-    
-    try:
-        modes[args.mode](ip, common_ports)
-    except:
-        print("Oops!Something wrong!")
-
-    #modes[args.mode](ip, common_ports)
-    
+        if not feature.is_up(ip):
+            raise Exception("Host is down")
+    except Exception as e:
+        print(e)
+    else:
+        try:
+            modes[args.mode](ip, common_ports)
+        except Exception as e:
+            print(e)

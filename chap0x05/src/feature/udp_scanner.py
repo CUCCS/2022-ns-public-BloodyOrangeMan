@@ -8,13 +8,17 @@ mixp = []
 
 def probe_port(ip, port, result = 1):
     src_port = RandShort()
-    try:
-        p = IP(dst=ip)/UDP(sport=src_port, dport=port)
+    try: 
+        reverseip = ip
+        reverseip = reverseip.split('.')
+        reverseip.reverse()
+        reverseip = '.'.join(reverseip) + ".in-addr.arpa"
+        p = IP(dst=ip)/UDP(sport=src_port, dport=port)/DNS(rd=1,qd=DNSQR(qname=reverseip, qtype='PTR'))
         resp = sr1(p, timeout=2, verbose=0) # Sending packet
-        if resp.haslayer(UDP):
-            result = Port.OPEN
-        elif resp is None:
+        if resp is None:
             result = Port.MIX
+        elif resp.haslayer(UDP):
+            result = Port.OPEN
         elif resp.haslayer(ICMP):
             if int(resp.getlayer(ICMP).type) == 3 and int(resp.getlayer(ICMP).code) == 3:
                 result = Port.CLOSED

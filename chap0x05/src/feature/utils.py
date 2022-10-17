@@ -10,7 +10,7 @@ class Port(Enum):
 
 def is_up(ip):
     icmp = IP(dst=ip)/ICMP()
-    resp = sr1(icmp, timeout=10)
+    resp = sr1(icmp, timeout=10, verbose=0)
     if resp is None:
         return False
     else:
